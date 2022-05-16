@@ -590,7 +590,10 @@ void Execve(const char *filename, char *const argv[],
             char *const envp[])
 {
     if(execve(filename, argv, envp) < 0)
+    {
         printf("%s: Command not found.\n", argv[0]);
+        _exit(1);
+    }
 }
 
 handler_t* Signal(int signum, handler_t* handler)
