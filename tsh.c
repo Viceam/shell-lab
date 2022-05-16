@@ -429,14 +429,22 @@ void sigchld_handler(int sig)
     {
         Sigprocmask(SIG_BLOCK, &mask, &prev);
         //正常结束
-        if(WIFEXITED(status))
+        if(WIFEXITED(status)) 
             deletejob(jobs, pid);
-        else if(WIFSIGNALED(status))
-        {
+
+        else if (WIFSIGNALED(status))
+        {         
+            printf ("Job [%d] (%d) terminated by signal %d\n", pid2jid(pid), pid, WTERMSIG(status));
+            deletejob(jobs, pid);
+        }
+
+        else if (WIFSTOPPED(status))
+        {           
             printf ("Job [%d] (%d) stoped by signal %d\n", pid2jid(pid), pid, WSTOPSIG(status));
             job = getjobpid(jobs, pid);
             job->state = ST;
         }
+
         Sigprocmask(SIG_SETMASK, &prev, NULL);
     }
 
